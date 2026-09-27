@@ -1,0 +1,72 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{cohen2017health}
+A.~J. Cohen, M.~Brauer, R.~Burnett, H.~R. Anderson, J.~Frostad, K.~Estep,
+  K.~Balakrishnan, B.~Brunekreef, L.~Dandona, R.~Dandona, et~al., Estimates and
+  25-year trends of the global burden of disease attributable to ambient air
+  pollution: an analysis of data from the global burden of diseases study 2015,
+  The Lancet 389~(10082) (2017) 1907--1918.
+
+\bibitem{balakrishnan2019india}
+K.~Balakrishnan, S.~Dey, T.~Gupta, R.~Dhaliwal, M.~Brauer, A.~J. Cohen, J.~D.
+  Stanaway, G.~Beig, T.~Joshi, A.~Aggarwal, et~al., The impact of air pollution
+  on deaths, disease burden, and life expectancy across the states of india:
+  the global burden of disease study 2017, The Lancet Planetary Health 3~(1)
+  (2019) e26--e39.
+
+\bibitem{ganguly2020ncap}
+T.~Ganguly, K.~L. Selvaraj, S.~K. Guttikunda, National clean air programme
+  (ncap) for indian cities: Review and outlook of clean air action plans,
+  Atmospheric Environment: X 8 (2020) 100096.
+
+\bibitem{brauer2019cpcb}
+M.~Brauer, S.~K. Guttikunda, K.~Nishant, et~al., Examination of monitoring
+  approaches for ambient air pollution: A case study for india, Atmospheric
+  Environment 216 (2019) 116940.
+
+\bibitem{kumar2020virtual}
+R.~Kumar, et~al., Virtual sensing of air quality using machine learning: A
+  review, Atmospheric Environment 223 (2020) 117215.
+
+\bibitem{mar2022wrf}
+K.~Mar, et~al., Air quality modeling: Limitations and prospects of chemical
+  transport models, Science of the Total Environment 811 (2022) 152345.
+
+\bibitem{yang2021dir}
+Y.~Yang, K.~Zha, Y.-C. Chen, H.~Wang, D.~Katabi, Delving into deep imbalanced
+  regression, in: International Conference on Machine Learning, PMLR, 2021, pp.
+  11842--11851.
+
+\bibitem{wang2020pm25gnn}
+S.~Wang, Y.~Li, J.~Zhang, Q.~Meng, L.~Meng, F.~Gao, Pm2.5-gnn: A domain
+  knowledge enhanced graph neural network for pm2.5 forecasting, in:
+  Proceedings of the 28th International Conference on Advances in Geographic
+  Information Systems, 2020, pp. 163--166.
+
+\bibitem{zheng2021sentinel}
+C.~Zheng, et~al., Estimating ground-level pm2.5 concentrations using
+  sentinel-5p no2 and aod products, Remote Sensing of Environment 263 (2021)
+  112563.
+
+\bibitem{cui2019effective}
+Y.~Cui, M.~Jia, T.-Y. Lin, Y.~Song, S.~Belongie, Class-balanced loss based on
+  effective number of samples, in: Proceedings of the IEEE/CVF conference on
+  computer vision and pattern recognition, 2019, pp. 9268--9277.
+
+\bibitem{wei2021rf}
+J.~Wei, Z.~Li, M.~Cribb, W.~Huang, W.~Xue, L.~Sun, J.~Guo, Y.~Peng, J.~Li,
+  A.~Lyapustin, et~al., Reconstructing 1-km-resolution high-quality pm2.5 data
+  records from 2000 to 2018 in china: spatiotemporal variations and policy
+  implications, Remote Sensing of Environment 252 (2021) 112136.
+
+\bibitem{doreswamy2020lstm}
+Doreswamy, K.~S. Harishkumar, K.~M. Yogesh, I.~M. Gad, Forecasting air
+  pollution particulate matter (pm2.5) using machine learning regression
+  models, Procedia Computer Science 171 (2020) 2057--2066.
+
+\end{thebibliography}

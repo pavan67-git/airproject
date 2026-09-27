@@ -1,0 +1,30 @@
+\section{Introduction}
+
+\subsection{Background and motivation}
+Air pollution remains one of the most critical environmental and public health challenges globally, with fine particulate matter ($PM_{2.5}$) acting as a primary driver of respiratory and cardiovascular morbidity \cite{smith2023health, gupta2023india}. In India, rapidly developing urban agglomerations frequently experience severe air quality degradation, prompting the government to establish the National Clean Air Programme (NCAP) with aggressive targets for particulate matter reduction \cite{sharma2023ncap}. However, achieving these targets and protecting public health relies on an accurate, high-resolution understanding of pollution dynamics. The Continuous Ambient Air Quality Monitoring Stations (CAAQMS), operated by the Central Pollution Control Board (CPCB), serve as the backbone of India's air quality monitoring network \cite{kumar2023cpcb}. Despite their precision, monitoring coverage remains uneven across cities, with limited representation of many residential and peri-urban areas. 
+
+This spatial gap is particularly challenging given the diverse urban air-pollution regimes across the country—from the landlocked, highly polluted Indo-Gangetic Plain to coastal and semi-arid industrial hubs. Virtual sensing \cite{das2024virtual} is highly valuable in these regions, as deploying and maintaining reference-grade monitoring stations at high density is often cost-prohibitive. Consequently, the central challenge is to infer the hourly $PM_{2.5}$ trajectory at locations lacking a historical ground-monitoring record, using only location-specific static information, satellite-derived daily signals, and meteorological inputs.
+
+\subsection{Existing approaches and limitations}
+Traditionally, chemical transport models (CTMs), such as WRF-Chem, have been employed to simulate atmospheric pollutant dispersion. While physically rigorous, CTMs are computationally expensive, rely heavily on highly resolved and frequently updated emission inventories, and are unsuitable for rapid edge-device deployment by municipal authorities \cite{jones2023wrf}.
+
+In recent years, standard machine learning (ML) models—including Random Forests, XGBoost, and standard recurrent neural networks like LSTMs and GRUs—have been widely adopted for air quality forecasting. However, these models are typically trained in a station-specific manner, exhibiting poor spatial generalization when deployed to unmonitored locations. Furthermore, models trained with conventional symmetric point-estimation losses (e.g., Mean Squared Error) can exhibit attenuated predictions during rare extreme events when the training distribution is heavily imbalanced. This motivates explicit evaluation of peak-sensitive objectives \cite{lee2023dir}.
+
+More recently, Spatio-Temporal Graph Neural Networks (ST-GNNs) have been deployed for air quality prediction \cite{chen2023pm25gnn}. Recent graph-based methods can model interactions across monitoring sites and often achieve strong performance in dense monitoring networks. However, their applicability to sparse Indian networks and truly unmonitored target locations is less established, and they often carry moderate to high computational requirements.
+
+Within the Indian context, recent studies have increasingly leveraged CPCB ground measurements and satellite retrievals for $PM_{2.5}$ estimation. For instance, research highlights the spatial heterogeneity of urban air pollution and the critical need for expanded monitoring networks \cite{kumar2023cpcb}. Other efforts have focused on integrating Sentinel-5P satellite products with ground data for high-resolution pollution mapping \cite{singh2023sentinel}. However, while several studies have advanced time-series forecasting at existing CPCB stations, demonstrating effective spatial transfer—or virtual sensing—across geographically distinct Indian cities without local training data remains a significant challenge \cite{das2024virtual}.
+
+\subsection{Research gap}
+There remains a need for a practical framework that combines daily satellite observations with hourly meteorological inputs to estimate $PM_{2.5}$ in cities excluded from model training, while explicitly evaluating the ability to preserve high-concentration episodes under limited data and computational resources.
+
+\subsection{Objectives and contributions}
+To bridge these gaps, this study proposes a Two-Stage Decoupled Framework with physics-guided scaling for air quality virtual sensing. The primary contributions of this work are summarized as follows:
+\begin{itemize}
+    \item \textbf{Two-stage formulation:} A two-stage formulation that estimates a daily $PM_{2.5}$ background scale from satellite, land-use, and daily meteorological inputs, followed by a temporal model that predicts hourly multiplicative deviations.
+    \item \textbf{Physics-aware variables:} A feature representation combining inverse planetary boundary layer height ($1/\text{PBLH}$), wind-vector decomposition, cyclic temporal features, Fire Radiative Power (FRP), and static land-use variables.
+    \item \textbf{Peak-sensitive objective:} A frequency-weighted Mean Absolute Error ($\mathcal{L}_{fMAE}$) objective with a sequence-variance regularizer designed to increase the contribution of rare high-$PM_{2.5}$ observations during training.
+    \item \textbf{Evaluation:} A geographical cross-city holdout evaluation on Lucknow and Patna, alongside a Stage-1-only ablation.
+\end{itemize}
+\vspace{0.5cm}
+\noindent The remainder of this paper is organized to ensure a logical flow of concepts. Section 2 details the proposed methodology, including data processing and model architecture. Section 3 presents the experimental results. Section 4 discusses the findings, and Section 5 concludes the paper.
+

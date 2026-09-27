@@ -1,0 +1,121 @@
+Here is the revised, publication-ready research blueprint. It integrates the structural amendments from Research Plan Validation and Novelty Assessment.pdf, resolving the satellite overpass mismatch, column-to-surface physics gap, and spatial evaluation leakage while maintaining a lightweight footprint for real-world municipal deployment.
+Paper Working Title
+"A Decoupled Spatio-Temporal Hybrid Framework with Physics-Guided Scaling for Air Quality Virtual Sensing in Indian Non-Attainment Airsheds"
+1. Problem Statement & Policy Context
+Urban air quality management across Indian non-attainment cities (under NCAP targets) faces two critical operational bottlenecks:
+The Spatial Coverage Deficit: Ground monitoring networks (CPCB CAAQMS) are sparse. Cities like Vadodara operate continuous monitoring almost exclusively in industrial sectors (e.g., Nandesari GIDC), leaving suburban and residential zones without real-time coverage.
+The Peak-Smoothing Failure: Standard deep learning models trained on symmetric loss functions (like MSE or MAE) underpredict extreme, episodic pollution surges (such as winter smog or biomass burning spikes) by collapsing predictions toward the historical mean.
+Core Gap Addressed: The lack of a lightweight, computationally efficient framework that accurately predicts diurnal pollution peaks ($T+1$ to $T+24$) and provides out-of-domain virtual sensing for unmonitored urban neighborhoods without requiring heavy supercomputing resources.
+2. Multi-Modal Data Engine & Physics Preprocessing
+The dataset fuses three distinct open-source streams, bound by mutual timestamps and spatial coordinates:
+
+
+
+┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
+│       CPCB Ground       │     │    Open-Meteo / ERA5    │     │   Sentinel-5P (GEE)     │
+│   (PM10, PM2.5, NO2)    │     │ (Temp, RH, Press, PBLH) │     │ (Aerosol Index, NO2 VCD)│
+└────────────┬────────────┘     └────────────┬────────────┘     └────────────┬────────────┘
+             │                               │                               │
+             └───────────────────────┬───────┴───────────────────────────────┘
+                                     ▼
+                      ┌──────────────────────────────┐
+                      │    Physics Feature Engine    │
+                      │  - U/V Wind Transformations  │
+                      │  - 1/PBLH Mixing Factor      │
+                      │  - Cyclic Time Transformations│
+                      └──────────────────────────────┘
+
+
+Engineered Features & Transformations:
+Target Pollutants: $PM_{10}$ and $PM_{2.5}$ (aligned directly with NCAP 2025–2026 municipal targets).
+Trigonometric Wind Vectors ($U/V$): Converts raw wind speed ($\text{WS}$) and direction ($\theta$) into continuous vector components to eliminate $0^\circ/360^\circ$ boundary discontinuities:
+$$U = \text{WS} \times \cos\left(\theta \frac{\pi}{180}\right), \quad V = \text{WS} \times \sin\left(\theta \frac{\pi}{180}\right)$$
+Vertical Dispersion Factor ($1/\text{PBLH}$): Incorporates the inverse of Planetary Boundary Layer Height ($1/\text{PBLH}$) as a physical scaling factor. This connects satellite vertical column density (VCD) with ground-level breathing zone concentrations.
+3. Decoupled Two-Stage Model Architecture
+To resolve the mismatch caused by Sentinel-5P's single daily overpass (~1:30 PM solar time), the model operates in two decoupled stages:
+
+
+
+                     ┌───────────────────────────────────┐
+                     │   Daily Sentinel-5P Overpass +    │
+                     │      Land Use Parameters          │
+                     └─────────────────┬─────────────────┘
+                                       │
+                                       ▼
+                     ┌───────────────────────────────────┐
+                     │    STAGE 1: Daily Baseline Model  │
+                     │    (Spatial Surface Regressor)    │
+                     └─────────────────┬─────────────────┘
+                                       │ Daily Average Constraint Prompt
+                                       ▼
+ ┌───────────────────┐               ┌───────────────────────────────────┐
+ │ Hourly Weather +  │ ────────────► │  STAGE 2: Sequence Generator      │ ──► T+1 to T+24
+ │ U/V Wind + 1/PBLH │               │  (1D-CNN + BiLSTM + Attention)    │     Hourly Forecasts
+ └───────────────────┘               └───────────────────────────────────┘
+
+
+Stage 1: Daily Spatial Baseline Estimation
+A spatial regressor (Random Forest / LightGBM) estimates daily mean surface concentrations across the city grid by merging daily Sentinel-5P overpasses, daily meteorology averages, and static land-use features.
+Stage 2: Hourly Sequence & Diurnal Generator
+A lightweight deep network (1D-CNN + BiLSTM + Self-Attention) operates at an hourly resolution:
+1D-CNN: Extracts short-term spatial feature interactions across pollutant and meteorological variables.
+BiLSTM: Captures sequential time dependencies forward and backward across historical windows.
+Self-Attention Layer: Dynamically assigns higher weights to high-variance timesteps.
+Daily Prompt Constraint: Uses Stage 1's daily spatial baseline as a static spatial constraint while relying on hourly weather features ($U/V$ vectors, $1/\text{PBLH}$) to generate $T+1 \dots T+24$ hour diurnal predictions.
+4. Peak-Aware Optimization ($\mathcal{L}_{fMAE}$)
+To prevent "peak smoothing," standard Mean Squared Error (MSE) is replaced with Frequency-Weighted Mean Absolute Error ($\mathcal{L}_{fMAE}$):
+
+$$\mathcal{L}_{fMAE} = \frac{1}{N} \sum_{i=1}^{N} w(y_i) \cdot \vert{}y_i - \hat{y}_i\vert{}$$
+where the dynamic sample weight $w(y_i)$ is formulated as:
+
+$$w(y_i) = \frac{1 - \beta}{1 - \beta^{n(y_i)}}$$
+In this equation, $n(y_i)$ represents the frequency of concentration bin $y_i$ in training data, and $\beta \in [0, 1)$ controls the weighting strength. Rare extreme smog events receive higher mathematical penalties, forcing network gradients to prioritize capturing hazardous spikes.
+5. Rigorous Evaluation Protocol: LOSO Cross-Validation
+To prevent spatial data leakage during evaluation, the paper discards random train/test splits in favor of Leave-One-Station-Out (LOSO) Spatial Cross-Validation:
+Given $N$ operational CAAQMS stations in an airshed (e.g., Ahmedabad-Vadodara), the model is trained on data from $N-1$ stations.
+The remaining station is completely held out during training and serves as an unmonitored virtual grid cell.
+The process is iterated across all $N$ folds, and virtual sensing capability is reported as the average out-of-sample $R^2$, MAE, and RMSE.
+6. Target Comparison & Novelty Positioning
+
+Metric / Dimension
+Standard Baseline Models
+Heavy SOTA (e.g., MAST-Net)
+Our Proposed Framework
+Data Fusion
+CPCB Ground Only
+Multi-Satellite + Ground
+CPCB Ground + Open-Meteo + Sentinel-5P
+
+
+Satellite Overpass Strategy
+Raw hourly feed (23h gaps)
+Complex GNN Fusion
+Decoupled 2-Stage Daily Constraint Prompt
+
+
+Loss Optimization
+Standard MSE (Smoothed)
+Weighted / Custom Loss
+Frequency-Weighted MAE ($\mathcal{L}_{fMAE}$)
+
+
+Spatial Validation
+Random Split (Inflated)
+Regional Grid Splits
+Leave-One-Station-Out (LOSO) CV
+
+
+Compute / Deployment
+Low
+Very High (Supercomputer/Server)
+Lightweight (Municipal Edge-Deployable)
+
+
+Realistic Target Metrics
+$R^2 \approx 0.40 - 0.55$ (LOSO)
+$R^2 \approx 0.76 - 0.82$
+$R^2 \approx 0.72 - 0.78$ (LOSO Out-of-Domain)
+
+
+
+

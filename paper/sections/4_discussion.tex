@@ -1,0 +1,46 @@
+\section{Discussion}
+
+\subsection{Interpretation of key findings}
+The improvement in zero-shot predictive performance validates the fundamental premise of the Two-Stage Decoupled Framework. The Stage-1 baseline alone can only explain city-level spatial averages; it possesses no awareness of intra-day temporal variability. The Stage-2 hybrid network achieves its performance gain by successfully learning the hourly meteorological triggers that govern pollution dynamics. 
+
+The temporal association between rising inverse PBLH and increased predicted ratios is consistent with the expected effect of reduced vertical mixing on surface $PM_{2.5}$. Additionally, the integration of $U$ and $V$ wind vectors allowed the model to track directional pollution advection. Ultimately, the multiplicative architecture proved essential for structuring the problem. By forcing the neural network to output a dimensionless scale factor ($r_t$) rather than a raw physical concentration, the network focused entirely on learning the shape of the diurnal cycle while trusting the satellite-derived Stage-1 baseline to dictate the absolute spatial magnitude.
+
+\subsection{Comparison with existing literature}
+When placed within the broader context of current literature, the zero-shot $R^2$ of 0.61 occupies a highly strategic efficiency-accuracy trade-off space. To contextualize this performance, Table \ref{tab:lit_comparison} outlines recent methodologies. However, direct numerical comparison should be interpreted cautiously because studies differ in monitoring density, data period, meteorological inputs, forecast horizon, and validation strategy. 
+
+\begin{table}[h]
+\centering
+\caption{Comparison with existing air quality virtual sensing and forecasting literature.}
+\label{tab:lit_comparison}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllc}
+\toprule
+\textbf{Study} & \textbf{Region} & \textbf{Validation Type} & \textbf{Model} & \textbf{Target} & \textbf{$R^2$} \\
+\midrule
+Zhao et al., 2023 \cite{zhao2023rf} & China & Random split & Random Forest & $PM_{2.5}$ & 0.85 \\
+Patel et al., 2023 \cite{patel2023lstm} & Taiwan & Temporal holdout & LSTM & $PM_{2.5}$ & 0.68 \\
+Chen et al., 2023 \cite{chen2023pm25gnn} & China & Spatial holdout & ST-GNN & $PM_{2.5}$ & 0.76 \\
+\textbf{This Study} & \textbf{India} & \textbf{Cross-city holdout} & \textbf{Hybrid CNN-BiLSTM} & \textbf{$PM_{2.5}$} & \textbf{0.61} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+While some state-of-the-art models can achieve higher in-domain $R^2$ scores, they often require significant computing infrastructure, rely on complex multi-satellite fusion engines, and frequently fail to execute locally on edge hardware. Our proposed framework achieves a competitive out-of-domain $R^2$ while maintaining a low computational footprint.
+
+\subsection{Public-health and policy implications}
+The ability to accurately forecast extreme peak events rather than just daily averages carries profound implications for public health management in Indian non-attainment cities. Standard models that systematically underpredict during an 800 $\mu g/m^3$ event provide a false sense of security, delaying critical interventions. It must be emphasized that this framework is currently a research prototype, not a clinically validated warning system. With additional forecast-input validation, uncertainty quantification, and local calibration, such a framework could eventually support neighborhood-scale decision-support tools. Schools, hospitals, and residential zones located far from the sparse CPCB ground stations could leverage these localized predictions for targeted health advisories.
+
+\subsection{Limitations and future work}
+Despite its successes, this study transparently acknowledges several limitations:
+\begin{itemize}
+    \item \textbf{Small training and testing geography:} The training dataset comprises only 8 station-chunks across four cities, evaluated on a single geographical split (Lucknow and Patna). This restricts the model's exposure to the full spectrum of Indian emission profiles and may lack representativeness for rural or diverse coastal regions.
+    \item \textbf{No independent sensor validation:} The framework was validated solely against CPCB monitors. Independent low-cost sensor networks were not used to verify intra-city spatial gradients.
+    \item \textbf{Unpredictable anthropogenic events:} The framework is designed to predict peaks driven by physical atmospheric mechanisms. It inherently cannot predict sudden, non-meteorological anthropogenic spikes (e.g., localized waste burning or Diwali firecrackers).
+    \item \textbf{Data quality and availability:} The model relies on satellite data which may suffer from spatial gaps due to persistent cloud cover during monsoons. Furthermore, CPCB sensors occasionally suffer from undetected sensor drift or frozen readings which can propagate as label noise.
+    \item \textbf{Architectural limitations:} The accuracy of the final prediction heavily depends on the Stage-1 daily-scale accuracy; severe baseline errors will be multiplicatively compounded by the Stage-2 ratios. Furthermore, formal comparison against explicitly matched sequence baselines (e.g., standalone LSTMs or lightweight ST-GNNs) is necessary to isolate architectural gains.
+    \item \textbf{Lack of uncertainty intervals:} The current model provides deterministic point predictions without uncertainty intervals.
+    \item \textbf{Forecast vs. Reanalysis weather:} While trained and evaluated on observed historical reanalysis weather data, real-world deployment necessitates using operational weather forecasts. Inherent meteorological forecast errors will inevitably propagate into the $PM_{2.5}$ predictions.
+\end{itemize}
+
+Future work must prioritize evaluating the framework using operational weather forecasts instead of historical reanalysis, conducting multi-fold spatial cross-validation, and integrating independent sensor networks for hyper-local validation.

@@ -1,0 +1,73 @@
+# ============================================================
+# CPCB Station Registry — Top 10 Indian Cities
+# ============================================================
+# Each entry maps to an OpenAQ location_id.
+# The fetch script will pull data for ALL stations listed here.
+# ============================================================
+
+airshed_name: "Top-10-Indian-Cities"
+
+# Date range for historical fetch (inclusive, IST)
+date_range:
+  start: "2021-01-01"
+  end:   "2026-12-31"
+
+# Target pollutant parameters (OpenAQ parameter names)
+parameters:
+  - "pm25"
+  - "pm10"
+stations:
+  - name: "Delhi"
+    openaq_location_id: 5630
+    latitude: 28.65195
+    longitude: 77.23149
+
+  - name: "Mumbai"
+    openaq_location_id: 3409323
+    latitude: 19.07283
+    longitude: 72.88261
+
+  - name: "Bengaluru"
+    openaq_location_id: 5607
+    latitude: 12.97194
+    longitude: 77.59369
+
+  - name: "Hyderabad"
+    openaq_location_id: 5647
+    latitude: 17.38405
+    longitude: 78.45636
+
+  - name: "Kolkata"
+    openaq_location_id: 6950
+    latitude: 22.56263
+    longitude: 88.36304
+
+  - name: "Ahmedabad"
+    openaq_location_id: 227536
+    latitude: 23.02579
+    longitude: 72.58727
+
+  - name: "Pune"
+    openaq_location_id: 60658
+    latitude: 18.51957
+    longitude: 73.85535
+
+  - name: "Chennai"
+    openaq_location_id: 3409319
+    latitude: 13.08784
+    longitude: 80.27847
+
+  - name: "Lucknow"
+    openaq_location_id: 3409318
+    latitude: 26.83928
+    longitude: 80.92313
+
+  - name: "Patna"
+    openaq_location_id: 7495
+    latitude: 25.59408
+    longitude: 85.13563
+
+  - name: "Maninagar Ahmedabad Gpcb"
+    openaq_location_id: 5631
+    latitude: 22.992
+    longitude: 72.598

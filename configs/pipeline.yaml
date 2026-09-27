@@ -1,0 +1,48 @@
+# ============================================================
+# Cleaning Pipeline Configuration
+# ============================================================
+# All thresholds referenced by src/clean_cpcb.py live here.
+# Adjust values to tighten or relax data quality gates.
+# ============================================================
+
+# --- Layer 2: Artifact Pre-Filtering ---
+artifact_filter:
+  # Values ≤ 0 are always converted to NaN.
+  # Upper-bound physical ceilings (µg/m³):
+  upper_bounds:
+    pm25: 1000.0
+    pm10: 2000.0
+    no2:  500.0
+
+# --- Layer 3: Sensor Drift & Cross-Pollutant ---
+drift_detection:
+  # Minimum consecutive hours of identical readings to flag as drift
+  flatline_hours: 6
+  # Cross-pollutant inversion tolerance (fraction, e.g. 0.02 = 2%)
+  pm25_pm10_tolerance: 0.02
+
+# --- Layer 4: Quality Assessment ---
+quality_filter:
+  # Minimum fraction of valid (non-NaN) hours required to keep a chunk
+  min_completeness: 0.85
+  # Maximum single contiguous gap (hours) before triggering a chunk split
+  max_contiguous_gap_hours: 72
+  # Minimum size (hours) for a chunk to be retained (~3 months)
+  min_chunk_hours: 2160
+
+# --- Layer 5: Micro-Imputation ---
+imputation:
+  # Maximum gap length (hours) eligible for linear interpolation
+  max_gap_hours: 3
+
+# --- Layer 6: Sequence Windowing ---
+windowing:
+  # Length of input lookback window (hours)
+  lookback_hours: 48
+  # Forecast horizon (hours)
+  horizon_hours: 24
+  # Sliding step between windows (hours)
+  stride_hours: 1
+  # The selected input features required to be NaN-free for a window to be kept
+  target_features:
+    - "pm25"

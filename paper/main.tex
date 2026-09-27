@@ -1,0 +1,61 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+% Elsevier guideline: Double spacing throughout
+\doublespacing
+
+\journal{Atmospheric Environment}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A Two-Stage Physics-Guided Framework for PM2.5 Virtual Sensing in Indian Cities}
+
+\author[1]{Keyan Vohra\corref{cor1}}
+\ead{keyangec@gmail.com}
+
+\author[1]{Pavan Jadav}
+\ead{pavangec@gmail.com}
+
+\address[1]{Computer Engineering Department, Government Engineering College, Bharuch, Gujarat, India}
+
+\cortext[cor1]{Corresponding author}
+
+\begin{abstract}
+\input{sections/0_abstract}
+\end{abstract}
+
+\begin{keyword}
+$PM_{2.5}$ \sep virtual sensing \sep zero-shot spatial generalization \sep Sentinel-5P \sep spatio-temporal forecasting \sep extreme pollution events
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sections/1_introduction}
+\input{sections/2_methods}
+\input{sections/3_results}
+\input{sections/4_discussion}
+\input{sections/5_conclusion}
+
+\section*{Acknowledgements}
+The authors gratefully acknowledge the Central Pollution Control Board (CPCB), India, for the continuous ambient air quality data, the Open-Meteo API for historical meteorological data, and the European Space Agency (ESA) for providing Sentinel-5P TROPOMI satellite retrievals. We also acknowledge Google Earth Engine for data processing capabilities and NASA for Fire Radiative Power (FRP) datasets. This research received no specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
+
+\section*{Data and code availability}
+Code required to reproduce preprocessing, training, and evaluation will be archived in a public GitHub repository and versioned through Zenodo upon acceptance. Raw CPCB, Open-Meteo, and Sentinel-5P data are available from their respective public platforms; processed data and station-level metadata will be provided subject to the applicable source terms.
+
+\nocite{*}
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}
